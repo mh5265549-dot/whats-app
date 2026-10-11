@@ -58,7 +58,10 @@ def send_order_confirmation(to_number: str, customer_name: str, order_number: st
         "Content-Type": "application/json",
     }
 
-    response = requests.post(GRAPH_URL, json=payload, headers=headers, timeout=15)
+    try:
+        response = requests.post(GRAPH_URL, json=payload, headers=headers, timeout=15)
+    except requests.RequestException as exc:
+        return {"status_code": 503, "body": {"error": f"Could not reach WhatsApp API: {exc}"}}
 
     try:
         data = response.json()
